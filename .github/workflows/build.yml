@@ -53,15 +53,6 @@ jobs:
         run: |
           ./gradlew --warning-mode all publish
 
-      - name: Deploy to gh-pages
-        if: ${{ env.CAN_PUBLISH == 'true' && env.CI_BRANCH == 'main' && env.CI_TAG != '' }}
-        uses: JamesIves/github-pages-deploy-action@v4
-        with:
-          folder: documentation/build/website
-          token: ${{ secrets.ACCESS_TOKEN }}
-          branch: gh-pages
-          target-folder: /${{ needs.check_branch.outputs.ninemlversion }}/
-
       - name: Deploy documentation to gh-pages (latest version)
         if: ${{ env.CAN_PUBLISH == 'true' && env.CI_BRANCH == 'main' }}
         uses: JamesIves/github-pages-deploy-action@v4
@@ -69,4 +60,4 @@ jobs:
           folder: build/website
           token: ${{ secrets.ACCESS_TOKEN }}
           branch: gh-pages
-          target-folder: /www/
+          target-folder: /docs/
