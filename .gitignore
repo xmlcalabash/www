@@ -1,0 +1,6 @@
+*_flymake.css
+/.gradle/
+/.sass-cache/
+/build/
+/etc/git-log-summary.xml
+/src/main/reference/

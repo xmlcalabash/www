@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:p="http://www.w3.org/ns/xproc"
+         xmlns:e="http://www.w3.org/1999/XSL/Spec/ElementSyntax"
+         xmlns:pxp="http://exproc.org/proposed/steps"
+         xml:id="ns"
+         version="5.0">
+<info>
+  <title>XML Calabash Namespaces</title>
+  <pubdate>2016-10-18T15:47:00Z</pubdate>
+</info>
+
+<para>XML Calabash uses several extension namespaces:</para>
+
+<itemizedlist>
+<listitem><para>http://xmlcalabash.com/ns/extensions</para></listitem>
+<listitem><para>http://xmlcalabash.com/ns/extensions/fileutils</para></listitem>
+<listitem><para>http://xmlcalabash.com/ns/extensions/marklogic</para></listitem>
+<listitem><para>http://xmlcalabash.com/ns/extensions/xmlunit</para></listitem>
+</itemizedlist>
+
+<para>The easiest way to use the steps that are defined in these namespaces
+is by importing the extension library:</para>
+
+<programlisting
+>&lt;p:import href="<link xlink:href="http://xmlcalabash.com/extension/steps/library-1.0.xpl">http://xmlcalabash.com/extension/steps/library-1.0.xpl</link>"/&gt;</programlisting>
+
+<para>Note that importing this library incurs no network traffic.
+<citetitle>XML Calabash</citetitle> recognizes the URI and accesses the
+set of declarations internally.</para>
+
+</article>

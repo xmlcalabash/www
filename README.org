@@ -1,0 +1,6 @@
+#+TITLE: README
+
+This branch builds the ~archive-1.x~ area. It’s not actually run
+very often (perhaps never again) as the content is archived in the
+main branch for convenience. But if it ever needs changing, here’s
+where you should start.

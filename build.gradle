@@ -1,0 +1,141 @@
+buildscript {
+  repositories {
+    mavenCentral()
+    maven { url "https://maven.restlet.talend.com" }
+  }
+
+  dependencies {
+    classpath group: 'org.docbook', name: 'docbook-xslt2', version: '2.5.0'
+    classpath group: 'com.xmlcalabash', name: 'xmlcalabash1-print', version: '1.1.4'
+    classpath group: 'com.xmlcalabash', name: 'xmlcalabash1-gradle', version: '1.4.0'
+  }
+}
+
+repositories {
+  mavenLocal()
+  mavenCentral()
+}
+
+
+configurations.all {
+  resolutionStrategy {
+    force 'xml-apis:xml-apis:1.4.01'
+  }
+}
+
+defaultTasks 'website'
+
+apply plugin: 'org.docbook.task'
+apply plugin: 'com.xmlcalabash.task'
+
+import org.docbook.DocBookTask
+import com.xmlcalabash.XMLCalabashTask
+
+/* The default task. It just depends on all the necessary pages */
+task website() {
+  /* Nothing to see here */
+}
+
+/* All of the hand-authored pages */
+def pages = [
+             'index',
+             'docs/index',
+             'ns/index',
+             'ns/extensions/index',
+             'ns/extensions/marklogic/index',
+             'ns/extensions/fileutils/index',
+             'ns/extensions/xmlunit/index',
+             'extension/attributes/index',
+             'extension/functions/index',
+             'extension/steps/index',
+             'extension/index'
+            ]
+
+def tasks = []
+
+/* Create a task for each page to update it if necessary */
+pages.each { page ->
+  String taskName = "page_" + page.replace("/", "_")
+  tasks.push(taskName)
+
+  task "$taskName" (dependsOn: ['gitlog', 'copyrsrcs' ],
+                    type: DocBookTask) {
+    doLast {
+      println("Executing task: " + taskName)
+    }
+    inputs.file "etc/nav.xml"
+    inputs.file "style/webpage.xsl"
+
+    input("source", "src/main/website/${page}.xml")
+    output("result", "build/website/archive-1.x/${page}.html")
+    pipeline "style/webpage.xpl"
+  }
+  website.dependsOn(taskName)
+}
+
+task builddirs {
+  doFirst {
+    mkdir("build/website/archive-1.x")
+    mkdir("build/website/archive-1.x/ns")
+    mkdir("build/website/archive-1.x/ns/extensions")
+    mkdir("build/website/archive-1.x/ns/extensions/fileutils")
+    mkdir("build/website/archive-1.x/ns/extensions/marklogic")
+    mkdir("build/website/archive-1.x/ns/extensions/xmlunit")
+    mkdir("build/website/archive-1.x/docs")
+    mkdir("build/website/archive-1.x/docs/reference")
+    mkdir("build/website/archive-1.x/extension")
+    mkdir("build/website/archive-1.x/extension/attributes")
+    mkdir("build/website/archive-1.x/extension/functions")
+    mkdir("build/website/archive-1.x/extension/steps")
+    mkdir("build/website/archive-1.x/css")
+    mkdir("build/website/archive-1.x/js")
+    mkdir("build/website/archive-1.x/img")
+  }
+}
+
+task copycss(dependsOn: builddirs, type: Copy) {
+  from 'src/main/css'
+  into 'build/website/archive-1.x/css'
+}
+
+task copyimg(dependsOn: builddirs, type: Copy) {
+  from 'src/main/img'
+  into 'build/website/archive-1.x/img'
+}
+
+task copyjs(dependsOn: builddirs, type: Copy) {
+  from 'src/main/js'
+  into 'build/website/archive-1.x/js'
+}
+
+task copypages(dependsOn: builddirs, type: Copy) {
+  from 'src/main/website'
+  into 'build/website/archive-1.x'
+}
+
+task copyref(dependsOn: builddirs, type: Copy) {
+  from 'src/main/reference'
+  into 'build/website/archive-1.x/docs/reference'
+}
+
+// Copy a bunch of files
+task copyrsrcs(dependsOn: ['copycss','copyimg','copyjs','copypages','copyref']) {
+  // nop
+}
+
+/* Get the current git log in XML */
+task gitlog(type: Exec) {
+  if (System.getProperty('os.name').toLowerCase().contains('windows')) {
+    commandLine "cmd", "/c", "perl", "bin/git-log-summary"
+  } else {
+    commandLine "bin/git-log-summary"
+  }
+  standardOutput = new FileOutputStream(new File("etc/git-log-summary.xml"))
+}
+
+task clean
+clean.doFirst {
+  delete "$buildDir"
+  delete ".gradle"
+  delete "etc/git-log-summary.xml"
+}
