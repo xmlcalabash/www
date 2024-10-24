@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article xmlns="http://docbook.org/ns/docbook"
+	 xmlns:xlink="http://www.w3.org/1999/xlink"
+	 xml:id="docs"
+         version="5.0">
+<info>
+  <title>Documentation</title>
+  <pubdate>2015-05-10T17:10:58Z</pubdate>
+</info>
+
+<para>Woefully incomplete, to be sure, but at least
+<link xlink:href="reference/">something</link> exists now.</para>
+
+<section xml:id="whatisit">
+<title>What is it?</title>
+
+<para>Calabash is an implementation of
+<citetitle xlink:href="http://www.w3.org/TR/xproc/">XProc:
+An XML Pipeline Language</citetitle>
+</para>
+
+</section>
+<section xml:id="prerequisites">
+<title>Prerequisites</title>
+
+<para>Calabash is built with Java 1.8 on top of Saxon.
+Recent releases rely on Maven to download dependencies so
+I've removed the often out-of-date list that used to be here.
+</para>
+
+<para>Some features rely on the “professional” edition of Saxon (XSD
+validation, for example). Some steps rely on additional, sometimes
+commercial, libraries.</para>
+
+<para>Calabash also implements several extension steps. These are not
+part of the XProc core language standard and cannot be expected to
+reliably interoperate with other implementations.
+These are documented in
+<link xlink:href="reference/">the reference documentation</link>.</para>
+</section>
+
+<section xml:id="howto">
+<title>How do I use it?</title>
+
+<para><link xlink:href="https://github.com/ndw/xmlcalabash1/releases/">Download</link> the latest release.
+Inside the archive you'll find <code>calabash.jar</code>. Make sure
+that jar file and the prerequisites are on your class path. Then you
+can run it from the command line:</para>
+
+<para><code>java com.xmlcalabash.drivers.Main
+<replaceable>options</replaceable> pipeline<replaceable>.xpl</replaceable></code></para>
+
+<para>For example:</para>
+
+<screen>$ java com.xmlcalabash.drivers.Main xpl/pipe.xpl
+&lt;doc xmlns:p="http://www.w3.org/ns/xproc"&gt;
+Congratulations! You've run your first pipeline!
+&lt;/doc></screen>
+
+<para>You can use <code>-i<replaceable>port</replaceable>=<replaceable>file</replaceable></code> to change the
+inputs and <code>-o<replaceable>port</replaceable>=<replaceable>file</replaceable>></code> to change the output
+location.</para>
+
+<para>For example:</para>
+
+<screen>$ java com.xmlcalabash.drivers.Main -isource=pipe.xpl -oresult=/tmp/out.xml xpl/pipe.xpl</screen>
+
+<para>That will run <code>pipe.xpl</code> using <code>pipe.xpl</code> as the input
+and writing the result to <code>/tmp/out.xml</code>.</para>
+
+<para>If you run <code>java com.xmlcalabash.drivers.Main</code> with
+no options, it will print a short usage summary.</para>
+
+<section xml:id="cmdline">
+<title>Simple pipelines from the command-line</title>
+
+<para>Starting with version 0.9.18, XML Calabash supports simple,
+linear pipelines on the command-line. The basic idea is that you list
+each of the steps with the <option>-s</option> option. You can precede
+each step with its inputs and parameters and follow it with its
+options.</para>
+
+<para>For example, to run an XSLT step, you could do something like
+this:</para>
+
+<screen>$ java com.xmlcalabash.drivers.Main \
+       -isource=doc.xml -istylesheet=style.xsl -s p:xslt</screen>
+
+<para>To validate the input then process it with XSLT, like this:
+</para>
+
+<screen>$ java com.xmlcalabash.drivers.Main \
+       -isource=doc.xml -ischema=schema.xsd -s p:validate-with-xml-schema \
+       -istylesheet=style.xsl -s p:xslt</screen>
+
+<para>The way this works is by constructing a literal pipeline from
+the steps passed on the command-line and then running that pipeline.</para>
+
+<para>If you run with the <option>--debug</option> option, you can see the
+pipeline that was constructed.</para>
+
+<para>If you load a library or libraries with <option>--library</option>
+option, you can refer to those steps in your pipeline, but each step
+must have a single primary input and a single primary output.
+</para>
+
+</section>
+</section>
+
+<section xml:id="ref">
+<title>Reference documentation</title>
+
+<para>See <citetitle xlink:href="reference">XML Calabash Reference</citetitle>.
+</para>
+</section>
+
+<section xml:id="whatif">
+<title>What do I do if it all goes wrong?</title>
+
+<para>Tell <link xlink:href="mailto:ndw@nwalsh.com">Norm</link>.</para>
+</section>
+</article>
