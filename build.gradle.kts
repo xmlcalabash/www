@@ -80,6 +80,8 @@ dependencies {
 
 // This build script doesn't do very much yet.
 
+defaultTasks("publish")
+
 tasks.register("publish") {
   dependsOn("copyArchive1x")
   dependsOn("copyStaticFiles")
@@ -113,6 +115,12 @@ tasks.register("copyStaticFiles") {
     copy {
       from(layout.projectDirectory.dir("src/main/fonts"))
       into(layout.buildDirectory.dir("website/fonts"))
+    }
+  }
+  doFirst {
+    copy {
+      from(layout.projectDirectory.dir("src/main/extension"))
+      into(layout.buildDirectory.dir("website/extension"))
     }
   }
 }
